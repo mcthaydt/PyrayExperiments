@@ -1,5 +1,3 @@
-# src/systems/render_system.py
-
 import math
 import pyray as rl
 from core.constants import (
@@ -13,7 +11,7 @@ class RenderSystem:
     def __init__(self, store, ecs, resource_manager):
         self.store = store
         self.ecs = ecs
-        self.res = resource_manager  # short alias to ResourceManager
+        self.res = resource_manager
 
         # Load (or retrieve) the floor texture
         self.floor_texture = self.res.load_texture(
@@ -53,9 +51,9 @@ class RenderSystem:
 
     def update(self):
         state = self.store.get_state()
-        angle = state["camera_angle"]
-        offset_height = state["offset_height"]
-        direction_idx = state["last_move_direction"]
+        angle = state.camera_angle
+        offset_height = state.offset_height
+        direction_idx = state.last_move_direction
 
         # Get player position from ECS
         player_entities = self.ecs.get_all_entities_with_components(
@@ -64,7 +62,7 @@ class RenderSystem:
         if player_entities:
             player_id = player_entities[0]
             transform = self.ecs.get_component(player_id, COMPONENT_TRANSFORM)
-            player_pos = transform["position"]
+            player_pos = transform.position  # Use dot notation
         else:
             player_pos = rl.Vector3(0, 0, 0)
 
@@ -86,7 +84,7 @@ class RenderSystem:
         )
         for floor_entity in floor_entities:
             floor_transform = self.ecs.get_component(floor_entity, COMPONENT_TRANSFORM)
-            tile_pos = floor_transform["position"]
+            tile_pos = floor_transform.position  # Use dot notation
             rl.draw_model(self.floor_model, tile_pos, 1.0, rl.WHITE)
 
         # Draw player billboard

@@ -1,36 +1,35 @@
-def game_reducer(state, action):
-    if action["type"] == "UPDATE_CAMERA":
-        payload = action["payload"]
-        return {
-            **state,
-            "camera_angle": payload["angle"],
-            "offset_height": payload["offset_height"],
-        }
-    elif action["type"] == "UPDATE_MOVEMENT":
-        payload = action["payload"]
-        return {
-            **state,
-            "move_direction": payload["move_direction"],
-            "last_move_direction": payload["last_move_direction"],
-        }
-    elif action["type"] == "UPDATE_POSITION":
-        payload = action["payload"]
-        return {
-            **state,
-            "player_position": payload["player_position"],
-        }
-    elif action["type"] == "UPDATE_INPUT":
-        payload = action["payload"]
-        return {
-            **state,
-            "move_intent": payload["move_intent"],
-            "mouse_delta": payload["mouse_delta"],
-        }
-    elif action["type"] == "UPDATE_FACING":
-        payload = action["payload"]
-        return {
-            **state,
-            "facing_angle": payload["facing_angle"],
-            "last_move_direction": payload["last_move_direction"],
-        }
-    return state
+from core.constants import GameState
+from core.actions import (
+    UpdateCameraAction,
+    UpdateMovementAction,
+    UpdatePositionAction,
+    UpdateInputAction,
+    UpdateFacingAction,
+)
+
+
+def game_reducer(state: GameState, action):
+    # Create a copy of the current state
+    updated_state = state.__dict__.copy()
+
+    if isinstance(action, UpdateCameraAction):
+        updated_state["camera_angle"] = action.angle
+        updated_state["offset_height"] = action.offset_height
+
+    elif isinstance(action, UpdateMovementAction):
+        updated_state["move_intent"] = action.move_direction
+        updated_state["last_move_direction"] = action.last_move_direction
+
+    elif isinstance(action, UpdatePositionAction):
+        updated_state["player_position"] = action.player_position
+
+    elif isinstance(action, UpdateInputAction):
+        updated_state["move_intent"] = action.move_intent
+        updated_state["mouse_delta"] = action.mouse_delta
+
+    elif isinstance(action, UpdateFacingAction):
+        updated_state["facing_angle"] = action.facing_angle
+        updated_state["last_move_direction"] = action.last_move_direction
+
+    # Return a new GameState instance with the updated state
+    return GameState(**updated_state)

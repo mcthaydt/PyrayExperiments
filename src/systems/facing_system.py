@@ -1,5 +1,3 @@
-# src/systems/facing_system.py
-
 import math
 from core.actions import create_action_update_facing
 from utils.movement_utils import map_angle_to_direction, DIRECTION_TO_INDEX
@@ -13,23 +11,19 @@ class FacingSystem:
 
     def update(self):
         state = self.store.get_state()
-        move_intent = state.get("move_intent", {"x": 0, "y": 0})
-        mouse_delta = state.get("mouse_delta", {"x": 0, "y": 0})
-        current_direction_idx = state.get("last_move_direction", 0)
-        is_moving = move_intent["x"] != 0 or move_intent["y"] != 0
+        move_intent = state.move_intent or {"x": 0, "y": 0}
+        mouse_delta = state.mouse_delta or {"x": 0, "y": 0}
+        current_direction_idx = state.last_move_direction
 
-        if is_moving:
-            angle_radians = math.atan2(
-                -move_intent["x"], -move_intent["y"]
-            )  # Needs to be inverted for some reason?
+        if move_intent["x"] != 0 or move_intent["y"] != 0:
+            angle_radians = math.atan2(-move_intent["x"], -move_intent["y"])
             self.absolute_facing_angle = math.degrees(angle_radians) % 360
             dir_name = map_angle_to_direction(self.absolute_facing_angle)
             new_direction_idx = DIRECTION_TO_INDEX[dir_name]
         else:
             if abs(mouse_delta["x"]) > self.camera_rotation_threshold:
-                self.absolute_facing_angle = (
-                    self.absolute_facing_angle + mouse_delta["x"] * -0.5
-                ) % 360
+                self.absolute_facing_angle += mouse_delta["x"] * -0.5
+                self.absolute_facing_angle %= 360
                 dir_name = map_angle_to_direction(self.absolute_facing_angle)
                 new_direction_idx = DIRECTION_TO_INDEX[dir_name]
             else:

@@ -1,5 +1,3 @@
-# main.py
-
 import pyray as rl
 from pyray import Vector3
 
@@ -10,19 +8,15 @@ from core.constants import (
     COMPONENT_PLAYER,
     COMPONENT_TRANSFORM,
     COMPONENT_FLOOR,
-    INITIAL_STATE,
+    GameState,
+    Transform,
 )
 
-# Original systems
 from systems.camera_system import CameraSystem
 from systems.movement_system import MovementSystem
 from systems.render_system import RenderSystem
-
-# NEW: Additional systems for more separation of concerns
 from systems.input_system import InputSystem
 from systems.facing_system import FacingSystem
-
-# NEW: Resource Manager for loading assets
 from core.resources import ResourceManager
 
 
@@ -36,10 +30,9 @@ def create_floor_tiles(ecs, grid_size=10, tile_size=3):
             ecs.add_component(
                 tile_entity,
                 COMPONENT_TRANSFORM,
-                {
-                    "position": Vector3(x * tile_size, 0, z * tile_size),
-                    "rotation": 0.0,
-                },
+                Transform(
+                    position=Vector3(x * tile_size, 0, z * tile_size), rotation=0.0
+                ),
             )
 
 
@@ -51,7 +44,7 @@ def main():
     # Create a Redux-style store
     store = Store(
         reducer=game_reducer,
-        initial_state=INITIAL_STATE,
+        initial_state=GameState(),
         middleware=[logger_middleware],
     )
 
@@ -63,7 +56,7 @@ def main():
     ecs.add_component(
         player_entity,
         COMPONENT_TRANSFORM,
-        {"position": Vector3(0, 0, 0), "rotation": 0.0},
+        Transform(position=Vector3(0, 0, 0), rotation=0.0),
     )
     ecs.add_component(player_entity, COMPONENT_PLAYER, {"speed": 1.0})
 

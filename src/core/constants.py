@@ -1,22 +1,35 @@
-# src/core/constants.py
-
-import math
+from dataclasses import dataclass
+from pyray import Vector3
 
 # ECS component keys
 COMPONENT_TRANSFORM = "transform"
 COMPONENT_PLAYER = "player"
-COMPONENT_FLOOR = "floor"  # <--- Added for floor tiles
+COMPONENT_FLOOR = "floor"
 
-# Initial store state
-INITIAL_STATE = {
-    "camera_angle": 0.0,
-    "offset_height": 2.15,
-    "last_move_direction": 0,
-    "move_intent": {"x": 0, "y": 0},
-    "mouse_delta": {"x": 0, "y": 0},
-}
 
-# For movement direction indexing (0..7)
+# Dataclass for Transform Component
+@dataclass
+class Transform:
+    position: Vector3
+    rotation: float
+
+
+# Dataclass for GameState
+@dataclass
+class GameState:
+    camera_angle: float = 0.0
+    offset_height: float = 2.15
+    last_move_direction: int = 0
+    move_intent: dict = None
+    mouse_delta: dict = None
+    facing_angle: float = 0.0  # <-- Add this field
+    player_position: Vector3 = Vector3(0, 0, 0)  # Add this attribute
+
+
+# Initial state
+INITIAL_STATE = GameState()
+
+# Movement direction indexing
 DIRECTION_TO_INDEX = {
     "front": 0,
     "front-right": 1,
@@ -28,7 +41,7 @@ DIRECTION_TO_INDEX = {
     "front-left": 7,
 }
 
-# For mapping direction names to sprite frames, if you need it
+# Sprite direction map
 SPRITE_DIRECTION_MAP = {
     "front": 0,
     "front-right": 1,

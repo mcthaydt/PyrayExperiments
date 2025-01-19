@@ -1,50 +1,62 @@
-# src/core/actions.py
+from dataclasses import dataclass
+from pyray import Vector3
 
 
-def create_action_update_camera(new_angle, new_offset):
-    return {
-        "type": "UPDATE_CAMERA",
-        "payload": {
-            "angle": new_angle,
-            "offset_height": new_offset,
-        },
-    }
+# Dataclass Definitions
+@dataclass
+class UpdateCameraAction:
+    angle: float
+    offset_height: float
+    type: str = "UPDATE_CAMERA"
 
 
-def create_action_update_movement(move_direction, last_move_direction):
-    return {
-        "type": "UPDATE_MOVEMENT",
-        "payload": {
-            "move_direction": move_direction,
-            "last_move_direction": last_move_direction,
-        },
-    }
+@dataclass
+class UpdateMovementAction:
+    move_direction: dict
+    last_move_direction: int
+    type: str = "UPDATE_MOVEMENT"
 
 
-def create_action_update_position(new_position):
-    return {
-        "type": "UPDATE_POSITION",
-        "payload": {
-            "player_position": new_position,
-        },
-    }
+@dataclass
+class UpdatePositionAction:
+    player_position: Vector3
+    type: str = "UPDATE_POSITION"
 
 
-def create_action_update_input(move_intent, mouse_delta):
-    return {
-        "type": "UPDATE_INPUT",
-        "payload": {
-            "move_intent": move_intent,
-            "mouse_delta": mouse_delta,
-        },
-    }
+@dataclass
+class UpdateInputAction:
+    move_intent: dict
+    mouse_delta: dict
+    type: str = "UPDATE_INPUT"
 
 
-def create_action_update_facing(angle, direction_idx):
-    return {
-        "type": "UPDATE_FACING",
-        "payload": {
-            "facing_angle": angle,
-            "last_move_direction": direction_idx,
-        },
-    }
+@dataclass
+class UpdateFacingAction:
+    facing_angle: float
+    last_move_direction: int
+    type: str = "UPDATE_FACING"
+
+
+# Compatibility Functions
+def create_action_update_camera(angle: float, offset_height: float):
+    return UpdateCameraAction(angle=angle, offset_height=offset_height)
+
+
+def create_action_update_movement(move_direction: dict, last_move_direction: int):
+    return UpdateMovementAction(
+        move_direction=move_direction, last_move_direction=last_move_direction
+    )
+
+
+def create_action_update_position(player_position: Vector3):
+    return UpdatePositionAction(player_position=player_position)
+
+
+def create_action_update_input(move_intent: dict, mouse_delta: dict):
+    return UpdateInputAction(move_intent=move_intent, mouse_delta=mouse_delta)
+
+
+def create_action_update_facing(facing_angle: float, last_move_direction: int):
+    return UpdateFacingAction(
+        facing_angle=facing_angle, last_move_direction=last_move_direction
+    )

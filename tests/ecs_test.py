@@ -1,5 +1,5 @@
 import unittest
-from modules.ecs import EntityComponentSystem
+from src.core.ecs import EntityComponentSystem
 
 
 class TestEntityComponentSystem(unittest.TestCase):

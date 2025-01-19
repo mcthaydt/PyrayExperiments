@@ -1,39 +1,25 @@
+# src/core/store.py
+
+
 class Store:
-    def __init__(self, reducer, initial_state=None, middleware=None):
-        self.state = initial_state or {}
+    def __init__(self, reducer, initial_state, middleware=None):
         self.reducer = reducer
-        self.middleware = middleware or []
-        self.subscribers = []
-
-    def dispatch(self, action):
-        # Pass the action through middleware
-        for mw in self.middleware:
-            action = mw(self.state, action, self.dispatch)
-
-        # Update the state using the reducer
-        self.state = self.reducer(self.state, action)
-
-        # Notify subscribers
-        for subscriber in self.subscribers:
-            subscriber(self.state)
+        self.state = initial_state
+        self.middleware = middleware if middleware else []
 
     def get_state(self):
         return self.state
 
-    def subscribe(self, callback):
-        self.subscribers.append(callback)
+    def dispatch(self, action):
+        # Let each middleware process the action
+        for mw in self.middleware:
+            mw(self, action)
+
+        # Then reduce
+        new_state = self.reducer(self.state, action)
+        self.state = new_state
+        return action
 
 
-# Reducer function
-def root_reducer(state, action):
-    state = state or {"player_position": [400, 300]}
-    if action["type"] == "UPDATE_PLAYER_POSITION":
-        return {**state, "player_position": action["position"]}
-    return state
-
-
-# Middleware functions
-def logger_middleware(state, action, dispatch):
-    print(f"Dispatching action: {action}")
-    print(f"Current state: {state}")
-    return action
+def logger_middleware(store, action):
+    print(f"[LOGGER] Dispatching: {action}")

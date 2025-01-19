@@ -1,3 +1,5 @@
+# src/systems/camera_system.py
+
 import pyray as rl
 from core.actions import create_action_update_camera
 
@@ -10,15 +12,14 @@ class CameraSystem:
 
     def update(self):
         state = self.store.get_state()
-        mouse_dx = rl.get_mouse_delta().x
+        mouse_delta = state.get("mouse_delta", {"x": 0, "y": 0})
+        # Access mouse_delta as a dictionary
+        mouse_dx = mouse_delta["x"]
 
-        # Update camera angle
-        new_angle = state["camera_angle"] - mouse_dx * self.mouse_sensitivity
+        new_angle = state.get("camera_angle", 0.0) - mouse_dx * self.mouse_sensitivity
 
-        # Smoothly move offset_height back to 2.15
         default_height = 2.15
-        new_height = (
-            state["offset_height"] + (default_height - state["offset_height"]) * 0.1
-        )
+        offset_height = state.get("offset_height", default_height)
+        new_height = offset_height + (default_height - offset_height) * 0.1
 
         self.store.dispatch(create_action_update_camera(new_angle, new_height))

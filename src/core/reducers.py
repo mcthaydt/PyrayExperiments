@@ -1,25 +1,36 @@
-import copy
-from .constants import INITIAL_STATE
-
-
 def game_reducer(state, action):
-    # If no state, use our INITIAL_STATE
-    if state is None:
-        state = copy.deepcopy(INITIAL_STATE)
-
-    if action["type"] == "UPDATE_PLAYER_POSITION":
-        return {**state, "player_position": action["position"]}
-    elif action["type"] == "UPDATE_CAMERA":
+    if action["type"] == "UPDATE_CAMERA":
+        payload = action["payload"]
         return {
             **state,
-            "camera_angle": action["angle"],
-            "offset_height": action["height"],
+            "camera_angle": payload["angle"],
+            "offset_height": payload["offset_height"],
         }
     elif action["type"] == "UPDATE_MOVEMENT":
+        payload = action["payload"]
         return {
             **state,
-            "move_direction": action["direction"],
-            "last_move_direction": action["last_direction"],
+            "move_direction": payload["move_direction"],
+            "last_move_direction": payload["last_move_direction"],
         }
-
+    elif action["type"] == "UPDATE_POSITION":
+        payload = action["payload"]
+        return {
+            **state,
+            "player_position": payload["player_position"],
+        }
+    elif action["type"] == "UPDATE_INPUT":
+        payload = action["payload"]
+        return {
+            **state,
+            "move_intent": payload["move_intent"],
+            "mouse_delta": payload["mouse_delta"],
+        }
+    elif action["type"] == "UPDATE_FACING":
+        payload = action["payload"]
+        return {
+            **state,
+            "facing_angle": payload["facing_angle"],
+            "last_move_direction": payload["last_move_direction"],
+        }
     return state

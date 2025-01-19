@@ -1,30 +1,41 @@
-import pyray as rl
+# src/core/constants.py
 
-# -- Component Types --
+import math
+
+# ECS component keys
 COMPONENT_TRANSFORM = "transform"
-COMPONENT_SPRITE = "sprite"
-COMPONENT_CAMERA = "camera"
-COMPONENT_INPUT = "input"
 COMPONENT_PLAYER = "player"
+COMPONENT_FLOOR = "floor"  # <--- Added for floor tiles
 
-# -- Sprite Direction --
-SPRITE_DIRECTION_MAP = {
-    0: "front",
-    1: "front-right",
-    2: "right",
-    3: "back-right",
-    4: "back",
-    5: "back-left",
-    6: "left",
-    7: "front-left",
-}
-DIRECTION_TO_INDEX = {v: k for k, v in SPRITE_DIRECTION_MAP.items()}
-
-# -- Initial Game State --
+# Initial store state
 INITIAL_STATE = {
-    "player_position": rl.Vector3(0, 0, 0),
     "camera_angle": 0.0,
     "offset_height": 2.15,
-    "move_direction": rl.Vector3(0, 0, 0),
-    "last_move_direction": 4,
+    "last_move_direction": 0,
+    "move_intent": {"x": 0, "y": 0},
+    "mouse_delta": {"x": 0, "y": 0},
+}
+
+# For movement direction indexing (0..7)
+DIRECTION_TO_INDEX = {
+    "front": 0,
+    "front-right": 1,
+    "right": 2,
+    "back-right": 3,
+    "back": 4,
+    "back-left": 5,
+    "left": 6,
+    "front-left": 7,
+}
+
+# For mapping direction names to sprite frames, if you need it
+SPRITE_DIRECTION_MAP = {
+    "front": 0,
+    "front-right": 1,
+    "right": 2,
+    "back-right": 3,
+    "back": 4,
+    "back-left": 5,
+    "left": 6,
+    "front-left": 7,
 }

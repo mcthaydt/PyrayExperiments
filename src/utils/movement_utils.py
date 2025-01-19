@@ -1,5 +1,6 @@
+# src/utils/movement_utils.py
 import math
-from core.constants import DIRECTION_TO_INDEX, SPRITE_DIRECTION_MAP
+from core.constants import SPRITE_DIRECTION_MAP, DIRECTION_TO_INDEX
 
 
 def map_angle_to_direction(angle):
@@ -23,11 +24,12 @@ def map_angle_to_direction(angle):
         return "front-left"
 
 
-def get_facing_direction(movement_input, last_direction):
-    """Converts a Vector3 movement input to a direction index using the SPRITE_DIRECTION_MAP."""
+def get_facing_direction(movement_input, last_direction_index):
+    """Converts a Vector3 movement input to a direction index."""
+    # movement_input.x, movement_input.z (2D plane)
     movement_length = math.sqrt(movement_input.x**2 + movement_input.z**2)
     if movement_length > 0:
         angle = math.degrees(math.atan2(movement_input.z, movement_input.x)) + 180
         direction_str = map_angle_to_direction(angle)
         return DIRECTION_TO_INDEX[direction_str]
-    return last_direction
+    return last_direction_index
